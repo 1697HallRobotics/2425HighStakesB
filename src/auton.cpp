@@ -75,7 +75,7 @@ void pid_drive() {
   //PIDCtrl lateral_pid(0.0f,0.0f,0.0f,[](void) -> float{return Rot.velocity(rpm);});
   float lateral = 0;
 
-  PIDCtrl rot_pid(0.0f,0.0f,0.0f,[](void) -> float{return Inertial.gyroRate(zaxis,rpm);});
+  PIDCtrl rot_pid(0.0f,0.0f,0.0f,[](void) -> float{return Inertial.angle(deg);});
   float turn = 0;
  
   while(1) {
@@ -105,6 +105,15 @@ void drive(float cm) {
   }
 }
 
-void turn(float deg) {
-  PIDCtrl rot_pid(0.0f,0.0f,0.0f,[](void) -> float{return Inertial.gyroRate(zaxis,rpm);});
+void turn(float degf) {
+  //PIDCtrl rot_pid(0.0f,0.0f,0.0f,[](void) -> float{return Inertial.gyroRate(zaxis,rpm);});
+  PIDCtrl rot_pid(0.0f,0.0f,0.0f,[](void) -> float{return Inertial.angle(deg);});
+
+  float turn;
+
+  while(1) {
+    turn = rot_pid.update(degf);
+    leftMotors.spin(fwd,turn,pct);
+    rightMotors.spin(fwd,-turn,pct);
+  }
 }

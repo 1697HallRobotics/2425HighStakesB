@@ -9,4 +9,6 @@ using namespace vex;
 
 #define eat_torus(t_msec) intake.spinFor(fwd,t_msec,msec)
 
-void drive(float cm = 0);
+void drive(float cm);
+
+void turn(float cm);
