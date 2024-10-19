@@ -15,7 +15,7 @@ motor right_back = motor(PORT8, ratio6_1, 0); // 11w
 motor_group leftMotors = motor_group(left_front, left_back);
 motor_group rightMotors = motor_group(right_front, right_back);
 //pneumatics
-digital_out pneum = digital_out(Brain.ThreeWirePort.A);
+pneumatics pneum = pneumatics(Brain.ThreeWirePort.A);
 //intake motors
 motor floater = motor(PORT11, ratio6_1, 1);
 motor hook = motor(PORT1, ratio18_1, 0); // 5.5w

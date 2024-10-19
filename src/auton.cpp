@@ -107,6 +107,31 @@ void drive(float cm) {
   }
 }
 */
+void drive(float cm) {
+
+  timer Timer = timer();
+  float acc_msec = 500;
+  float time = 3.25*cm/600 + acc_msec;
+  float lateral;
+  while(1) {
+    lateral = 600*trap_target(acc_msec,time,Timer.time(sec));
+    leftMotors.spin(fwd,lateral,rpm);
+    rightMotors.spin(fwd,lateral,rpm);
+  }
+}
+void turn(float degf) {
+
+  timer Timer = timer();
+  float acc_msec = 500;
+  float time = 3.25*degf/600 + acc_msec;
+  float lateral;
+  while(1) {
+    lateral = 600*trap_target(acc_msec,time,Timer.time(sec));
+    leftMotors.spin(fwd,-lateral,rpm);
+    rightMotors.spin(fwd,lateral,rpm);
+  }
+}
+/*
 void turn(float degf) {
   //PIDCtrl rot_pid(0.0f,0.0f,0.0f,[](void) -> float{return Inertial.gyroRate(zaxis,rpm);});
   PIDCtrl rot_pid(0.0f,0.0f,0.0f,[](void) -> float{return Inertial.angle(deg);});
@@ -119,3 +144,4 @@ void turn(float degf) {
     rightMotors.spin(fwd,-turn,pct);
   }
 }
+*/

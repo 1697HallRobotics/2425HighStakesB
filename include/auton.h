@@ -7,8 +7,8 @@ using namespace vex;
 
 #define clamp_mogo() pneum.set(!pneum.value())
 
-#define eat_torus(t_msec) intake.spinFor(fwd,t_msec,msec)
+#define eat_torus(t_msec) intake.spinFor(t_msec,msec,100,pct)
 
 void drive(float cm);
 
-void turn(float cm);
+void turn(float degf);

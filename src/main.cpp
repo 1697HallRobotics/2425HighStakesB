@@ -15,9 +15,35 @@ using std::abs;
 // A global instance of competition
 competition Competition = competition();
 
+void tankdrive(void) {
+  Controller1.ButtonR2.pressed([](void){intake.spin(fwd,100,pct);});
+  Controller1.ButtonR2.released([](void){intake.stop(coast);});
+  Controller1.ButtonR1.pressed([](void){intake.spin(fwd,-100,pct);});
+  Controller1.ButtonR1.released([](void){intake.stop(coast);});
+  Controller1.ButtonA.pressed([](void){pneum.set(!pneum.value());});
+
+  while(1) {
+    int x1 = Controller1.Axis4.position();
+    int x2 = Controller1.Axis1.position();
+
+
+    if(abs(x1) < 10)
+      leftMotors.spin(fwd,x1,pct);
+    else
+      leftMotors.stop(coast);
+    
+    if(abs(x2) < 10)
+      rightMotors.spin(fwd,x2,pct);
+    else
+      rightMotors.stop(coast);
+    wait(5,msec); // So the cortex doesn't overload
+  } 
+}
 void usercontrol(void) {
   Controller1.ButtonR2.pressed([](void){intake.spin(fwd,100,pct);});
   Controller1.ButtonR2.released([](void){intake.stop(coast);});
+  Controller1.ButtonR1.pressed([](void){intake.spin(fwd,-100,pct);});
+  Controller1.ButtonR1.released([](void){intake.stop(coast);});
   Controller1.ButtonA.pressed([](void){pneum.set(!pneum.value());});
 
   while(1) {
@@ -43,9 +69,18 @@ void usercontrol(void) {
 }
 
 void auton_1() {
-
+  thread T([] {
+    timer Timer = timer();
+    while(Timer.time(msec) < 100) {
+      leftMotors.spin(fwd,70,pct);
+      rightMotors.spin(fwd,70,pct);
+    }
+  });
+  intake.spinFor(2000,msec,200,rpm);
+  T.detach();
 }
 
+/*
 void auton_2() {
 
 }
@@ -63,17 +98,18 @@ void pre_auton(void) {
   else
     Brain.Screen.printAt(0,10,0,"Inertial is not installed!");
 
-  if(triport(PORT1).installed())
-    autonomous = auton_2;
+  if(triport(PORT19).installed())
+    autonomous = auton_1;
   else
     autonomous = auton_1;
 }
+*/
 
 int main() {
 
-  pre_auton();
+  //pre_auton();
   
-  Competition.autonomous(autonomous);
+  Competition.autonomous([] {});
   Competition.drivercontrol(usercontrol);
 
   while (true) {

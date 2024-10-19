@@ -14,7 +14,7 @@ extern motor right_back;
 extern motor_group leftMotors;
 extern motor_group rightMotors;
 //pneumatics
-extern digital_out pneum;
+extern pneumatics pneum;
 //intake motors
 extern motor_group intake;
 //sensors
