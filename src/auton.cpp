@@ -70,6 +70,7 @@ float trap_target(int acc_msec, int time, float t) {
   return 1;
 }
 
+/*
 void pid_drive() {
   PIDCtrl lateral_pid(0.0f,0.0f,0.0f,velocity);
   //PIDCtrl lateral_pid(0.0f,0.0f,0.0f,[](void) -> float{return Rot.velocity(rpm);});
@@ -90,7 +91,8 @@ void pid_drive() {
     wait(25,msec);
   }
 }
-
+*/
+/*
 void drive(float cm) {
   timer Timer = timer();
   PIDCtrl drive_pid(0.0f,0.0f,0.0f,velocity);
@@ -104,7 +106,7 @@ void drive(float cm) {
     rightMotors.spin(fwd,lateral,rpm);
   }
 }
-
+*/
 void turn(float degf) {
   //PIDCtrl rot_pid(0.0f,0.0f,0.0f,[](void) -> float{return Inertial.gyroRate(zaxis,rpm);});
   PIDCtrl rot_pid(0.0f,0.0f,0.0f,[](void) -> float{return Inertial.angle(deg);});

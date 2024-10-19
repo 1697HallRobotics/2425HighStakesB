@@ -43,15 +43,11 @@ void usercontrol(void) {
 }
 
 void auton_1() {
-  drive(300);
-  eat_torus(2000);
+
 }
 
 void auton_2() {
-  thread T([]{drive(300);});
-  wait(1,sec);
-  eat_torus(2000);
-  T.join();
+
 }
 
 void (* autonomous)(void);
