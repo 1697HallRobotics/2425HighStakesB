@@ -12,3 +12,7 @@ using namespace vex;
 void drive(float cm);
 
 void turn(float degf);
+
+float get_avg_rpm();
+
+

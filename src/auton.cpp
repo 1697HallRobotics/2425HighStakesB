@@ -30,6 +30,9 @@ class PIDCtrl {
 
 };
 
+float get_avg_rpm() {
+    return 0.25*(left_front.velocity(pct) + right_front.velocity(pct) + left_back.velocity(pct) + right_back.velocity(pct));
+}
 
 void trap_acc_drive() {
   float k = 100;
@@ -107,6 +110,31 @@ void drive(float cm) {
   }
 }
 */
+
+
+void trap_drive(float rot) {
+  timer Timer = timer();
+  bool acc = true;
+  float start = Timer.system();
+  float K = 0.1; //pct per msec ~~ 100 pct per 1000 msec;
+  float dt, K, lateral;
+  Timer.clear();
+  while(start + 2000 > Timer.system()) {
+    dt = Timer.time(msec); // msec
+    lateral += dt*K*(acc*2-1);
+    if(lateral >= 100)
+      lateral = 100;
+    if(lateral <= -100)
+      lateral = -100;
+    if(abs(lateral) > 10) {
+      leftMotors.spin(fwd,lateral,rpm);
+      rightMotors.spin(fwd,lateral,rpm);
+    }
+    Timer.clear();
+    wait(10,msec);
+  }
+}
+
 void drive(float cm) {
 
   timer Timer = timer();
