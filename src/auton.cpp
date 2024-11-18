@@ -3,6 +3,7 @@
 
 using namespace vex;
 
+/* 
 class PIDCtrl {
   private:
     float kP, kI, kD, error, integral, derriv, prevError, (* sense_val) (void);
@@ -111,7 +112,7 @@ void drive(float cm) {
 }
 */
 
-
+/*
 void trap_drive(float rot) {
   timer Timer = timer();
   bool acc = true;
@@ -159,6 +160,7 @@ void turn(float degf) {
     rightMotors.spin(fwd,lateral,rpm);
   }
 }
+*/
 /*
 void turn(float degf) {
   //PIDCtrl rot_pid(0.0f,0.0f,0.0f,[](void) -> float{return Inertial.gyroRate(zaxis,rpm);});
