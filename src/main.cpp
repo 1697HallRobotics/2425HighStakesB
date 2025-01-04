@@ -26,42 +26,88 @@ void tankdrive(void) {
   Controller1.ButtonA.pressed([](void){pneum.set(!pneum.value());});
 
   while(1) {
-    int x1 = Controller1.Axis4.position();
-    int x2 = Controller1.Axis1.position();
+    int y1 = Controller1.Axis3.position();
+    int y2 = Controller1.Axis2.position();  
 
 
-    if(abs(x1) < 10)
-      leftMotors.spin(fwd,x1,pct);
+    if(abs(y1) < 10)
+      leftMotors.spin(fwd,y1,pct);
     else
       leftMotors.stop(coast);
     
-    if(abs(x2) < 10)
-      rightMotors.spin(fwd,x2,pct);
+    if(abs(y2) < 10)
+      rightMotors.spin(fwd,y2,pct);
     else
       rightMotors.stop(coast);
     wait(5,msec); // So the cortex doesn't overload
   } 
 }
-void usercontrol(void) {
-  //Controller1.ButtonR2.pressed([](void){intake.spin(fwd,100,pct);});
-  //Controller1.ButtonR2.released([](void){intake.stop(coast);});
-  //Controller1.ButtonR1.pressed([](void){intake.spin(fwd,-100,pct);});
-  //Controller1.ButtonR1.released([](void){intake.stop(coast);});
-  Controller1.ButtonA.pressed([](void){pneum.set(!pneum.value());});
 
-  while(1) {
+void intakeControl() {
+  if(Controller1.ButtonR2.pressing())
+      floater.spin(fwd,100,pct);
+  else floater.stop(coast);
+  if(Controller1.ButtonR1.pressing())
+      hook.spin(fwd,100,pct);
+  else hook.stop(coast);
+  if(Controller1.ButtonL2.pressing())
+      floater.spin(fwd,-100,pct);
+  else floater.stop(coast);
+  if(Controller1.ButtonL1.pressing())
+      hook.spin(fwd,-100,pct);
+  else hook.stop(coast);
+}
 
+void intakeControlv2 () {
     if(Controller1.ButtonR2.pressing())
-      intake.spin(fwd,100,pct);
+      floater.spin(fwd,100,pct);
     if(Controller1.ButtonR1.pressing())
-      intake.spin(fwd,-100,pct);
+      floater.spin(fwd,-100,pct);
     if(!Controller1.ButtonR1.pressing() && !Controller1.ButtonR2.pressing())
-      intake.stop(coast);
+      floater.stop(coast);
+    
+    if(Controller1.ButtonL1.pressing()) {
+      if(Controller1.ButtonR1.pressing() || Controller1.ButtonR2.pressing())
+      {
+        hook.spin(fwd,100,pct);
+        floater.stop(coast);
+      }
+      else
+        intake.spin(fwd,-100,pct);
+    }
+    else 
+      { hook.stop(coast); }
+    
+    if(Controller1.ButtonL2.pressing()) {
+      if(Controller1.ButtonL1.pressing() || Controller1.ButtonR2.pressing())
+      {
+        hook.spin(fwd,100,pct);
+        floater.stop(coast);
+      }
+      else
+        intake.spin(fwd,100,pct);
+    }
+    else 
+      { hook.stop(coast); }
+}
 
-    drive();
+void usercontrol() {
+  Controller1.ButtonR2.pressed([](void){intake.spin(fwd,100,pct);});
+  Controller1.ButtonR2.released([](void){intake.stop(coast);});
+  Controller1.ButtonR1.pressed([](void){intake.spin(fwd,-100,pct);});
+  Controller1.ButtonR1.released([](void){intake.stop(coast);});
+  Controller1.ButtonL1.pressed([](void){pneum.set(!pneum.value());});
+  Controller1.ButtonL2.pressed([](void){if(!pneum.value()) pneum.set(1);});
+  Controller1.ButtonB.pressed([](void){if(pneum.value()) pneum.set(0);});
 
-    wait(5,msec); // So the cortex doesn't overload
-  } 
+    while(1) {
+
+      //intakeControl();
+
+      drive();
+
+      wait(5,msec); // So the cortex doesn't overload
+    }
 }
 
 void drive() {
@@ -148,7 +194,7 @@ void pre_auton(void) {
 timer Timer;
 void move(float leftpow, float rightpow, float tmsec, bool delay = true) {
   leftMotors.spin(fwd,leftpow,pct);
-  rightMotors.spin(fwd,rightpow,pct); 
+  rightMotors.spin(fwd,rightpow,pct);
   if(delay)
     Timer.event([] {allMotors.stop(hold);},tmsec);
   else {
@@ -157,21 +203,62 @@ void move(float leftpow, float rightpow, float tmsec, bool delay = true) {
   }
 }
 
-void auton() {
-  move(70,70,1000);
-  move(70,-70,600);
-  move(-60,-60,200);
-  pneum.close();
-  move(-80,-60,800);
+void eat(float pow, float tmsec, bool delay = true) {
+  intake.spin(fwd,pow,pct);
+  if(!delay)
+    Timer.event([] {intake.stop(hold);},tmsec);
+  else {
+    wait(tmsec,msec);
+    intake.stop(hold);
+  }
 }
 
+void auton() {
+  move(-70,-70,870);
+  pneum.set(!pneum.value());
+  eat(-100,1000);
+  pneum.set(!pneum.value());
+  move(60,-60,500);
+  move(70,70,600);
+}
+void auton_2_donut() {
+  move(-70,-70,800);
+  pneum.set(!pneum.value());
+  eat(-100,1000);
+  pneum.set(1);
+  move(-60,60,900);
+  move(60,60,1200,false);
+  eat(-100,3000);
+  move(-70,-70,600);
+  pneum.set(0);
+  move(-60,60,700);
+  move(70,70,600);
+  move(-50,-50,400);
+  pneum.set(1);
+  eat(-100,2000);
+}
+void auton_2() {
+  move(-70,-70,800);
+  pneum.set(!pneum.value());
+  eat(-100,1000);
+  move(-60,60,400);
+  move(70,70,600);
+}
+
+void skills() {
+  move(-60,-60,100);
+  pneum.set(1);
+  eat(-100,1000);
+  move(60,70,800,false);
+  eat(-100,800);
+}
 
 
 int main() {
 
   //pre_auton();
   
-  Competition.autonomous(auton);
+  Competition.autonomous(auton_2);
   Competition.drivercontrol(usercontrol);
 
   while (true) {

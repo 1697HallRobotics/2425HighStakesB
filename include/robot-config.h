@@ -17,6 +17,8 @@ extern motor_group allMotors;
 //pneumatics
 extern pneumatics pneum;
 //intake motors
+extern motor hook;
+extern motor floater;
 extern motor_group intake;
 //sensors
 extern inertial Inertial;

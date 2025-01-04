@@ -8,10 +8,10 @@ brain Brain = brain();
 controller Controller1 = controller();
 controller Controller2 = controller(); // Maybe dual controller
 //drive motors
-motor left_front = motor(PORT1, ratio6_1, 1); // 11w
-motor left_back = motor(PORT11, ratio6_1, 1); // 11w
-motor right_front = motor(PORT10, ratio6_1, 0); // 11w
-motor right_back = motor(PORT9, ratio6_1, 0); // 11w
+motor left_front = motor(PORT9, ratio6_1, 1); // 11w
+motor left_back = motor(PORT5, ratio6_1, 1); // 11w
+motor right_front = motor(PORT8, ratio6_1, 0); // 11w
+motor right_back = motor(PORT19, ratio6_1, 0); // 11w
 motor_group leftMotors = motor_group(left_front, left_back);
 motor_group rightMotors = motor_group(right_front, right_back);
 motor_group allMotors = motor_group(right_front, right_back,left_front, left_back);
@@ -19,10 +19,10 @@ motor_group allMotors = motor_group(right_front, right_back,left_front, left_bac
 //pneumatics
 pneumatics pneum = pneumatics(Brain.ThreeWirePort.A);
 //intake motors
-motor floater = motor(PORT20, ratio6_1, 1);
-motor hook = motor(PORT12, ratio18_1, 0); // 5.5w
+motor floater = motor(PORT1, ratio6_1, 0);
+motor hook = motor(PORT15, ratio18_1, 0); // 5.5w
 motor_group intake = motor_group(floater, hook);
 //sensors
-inertial Inertial = inertial(PORT10);
-rotation Rot = rotation(PORT11);
-vision Vision = vision(PORT11); // Unlikely
+inertial Inertial = inertial(PORT21);
+rotation Rot = rotation(PORT21);
+vision Vision = vision(PORT21); // Unlikely
