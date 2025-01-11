@@ -217,35 +217,43 @@ void move(float leftpow, float rightpow, float tmsec, bool delay = true)
 {
     leftMotors.spin(fwd, leftpow, pct);
     rightMotors.spin(fwd, rightpow, pct);
+    /*
     if (delay)
         Timer.event([]
                     { allMotors.stop(hold); }, tmsec);
     else
     {
+    */
         wait(tmsec, msec);
         allMotors.stop(hold);
-    }
+    //}
 }
 
 void eat(float pow, float tmsec, bool delay = true)
 {
     intake.spin(fwd, pow, pct);
+    /*
     if (!delay)
         Timer.event([]
                     { intake.stop(hold); }, tmsec);
     else
     {
+    */
         wait(tmsec, msec);
         intake.stop(hold);
-    }
+    //}
 }
 
 void auton()
 {
-    move(-70, -70, 870,false);
+    pneum.set(!pneum.value());
+    move(-60, -60, 870,false);
     pneum.set(!pneum.value());
     eat(100, 1000);
+    move(-70, 70, 1000);
 }
+
+
 void auton_2_donut()
 {
     move(-70, -70, 800);
@@ -274,11 +282,19 @@ void auton_2()
 
 void skills()
 {
-    move(-60, -60, 100);
-    pneum.set(1);
-    eat(-100, 1000);
-    move(60, 70, 800, false);
-    eat(-100, 800);
+    pneum.set(!pneum.value());
+    move (-60, -60, 400);
+    wait(1, sec);
+    pneum.set(!pneum.value());
+    wait(1, sec);
+    eat(100, 1000);
+    move(60, -60, 740);
+    wait(1, sec);
+    move(60, 60, 820), false;
+    eat(100, 3000);
+    move(-60, 60, 1210);
+    move(-60, -60, 1850);
+    pneum.set(!pneum.value());
 }
 
 int main()
@@ -286,7 +302,7 @@ int main()
 
     // pre_auton();
 
-    Competition.autonomous(auton);
+    Competition.autonomous(skills);
     Competition.drivercontrol(usercontrol);
 
     while (true)
