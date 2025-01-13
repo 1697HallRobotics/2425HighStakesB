@@ -1,11 +1,7 @@
 #include "main.h"
-#include "pros/abstract_motor.hpp"
-#include "pros/adi.h"
 #include "pros/adi.hpp"
-#include "pros/colors.hpp"
 #include "pros/misc.h"
 #include "pros/motors.h"
-#include "pros/screen.hpp"
 
 #define LEFT_MOTOR_PORTS {7, 5}
 #define RIGHT_MOTOR_PORTS {8, 19}
@@ -18,16 +14,7 @@
  * All other competition modes are blocked by initialize; it is recommended
  * to keep execution time for this mode under a few seconds.
  */
-void initialize() {
-	/*
-	pros::screen::set_pen(pros::Color::red);
-    pros::screen::fill_rect(6,6,474,133);
-	pros::screen::set_pen(pros::Color::blue);
-	pros::screen::fill_rect(6,139,474,266);
-	pros::screen::set_pen(pros::Color::black);
-	pros::screen::fill_rect(237, 133, 243, 139);
-	*/
-}
+void initialize() {}
 
 /**
  * Runs while the robot is in the disabled state
@@ -46,6 +33,7 @@ void autonomous() {}
 /**
  */
 void opcontrol() {
+	int32_t DEADZONE = 10;
 	pros::Controller master(pros::E_CONTROLLER_MASTER);
 	pros::MotorGroup left_mg(LEFT_MOTOR_PORTS);
 	pros::MotorGroup right_mg(RIGHT_MOTOR_PORTS);
@@ -59,9 +47,18 @@ void opcontrol() {
 	while (1) {
 		int dir = master.get_analog(ANALOG_LEFT_Y);    // Gets amount forward/backward from left joystick
 		int turn = master.get_analog(ANALOG_RIGHT_X);  // Gets the turn left/right from right joystick
-		left_mg.move(dir - turn);                      // Sets left motor voltage
-		right_mg.move(dir + turn);                     // Sets right motor voltage
-		pros::delay(5);                               // Run for 20 ms then update
+		
+		if(abs(dir) < DEADZONE)
+			dir = 0;
+		if(abs(turn) < DEADZONE)
+			turn = 0;
+		if(dir && turn == 0) {
+			left_mg.brake();
+			right_mg.brake();
+		} else {
+			left_mg.move(dir - turn);                      // Sets left motor voltage
+			right_mg.move(dir + turn);  					// Sets right motor voltage
+		}
 
 		if(master.get_digital(DIGITAL_R2))
 			intake_mg.move(127);
@@ -76,5 +73,6 @@ void opcontrol() {
 		if(master.get_digital(DIGITAL_A))
 			pneumatic.set_value(pneumatic.toggle());
 
+		pros::delay(5);
 	}
 }
