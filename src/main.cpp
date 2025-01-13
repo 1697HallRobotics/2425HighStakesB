@@ -282,24 +282,33 @@ void auton_2()
 
 void skills()
 {
+    //first goal
     pneum.set(!pneum.value());
     move (-60, -60, 400);
     wait(1, sec);
     pneum.set(!pneum.value());
     wait(1, sec);
     eat(100, 1000);
-    move(60, -60, 740);
+    //turn to second and score
+    move(60, -60, 730);
     wait(1, sec);
     move(60, 60, 820), false;
     eat(100, 3000);
-    move(-60, 60, 1210);
-    move(-60, -60, 1850);
-    pneum.set(!pneum.value());
+    //turn towards wall and eat
+    move(-60, 60, 370);
+    move(60, 60, 820);
+    eat(100, 3000);
+    //turn back and eat
+    move(60, -60, 370);
+    move(60, 60, 820);
+    eat(100, 3000);
+
+    /*pneum.set(!pneum.value());
     move(60, -60, 200);
     move(-60, -60, 4400);
     pneum.set(!pneum.value());
     move(-60, 60, 200);
-    move(-60, -60, 1850);
+    move(-60, -60, 1850);*/
 }
 
 int main()
