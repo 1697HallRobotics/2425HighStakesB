@@ -295,6 +295,11 @@ void skills()
     move(-60, 60, 1210);
     move(-60, -60, 1850);
     pneum.set(!pneum.value());
+    move(60, -60, 200);
+    move(-60, -60, 4400);
+    pneum.set(!pneum.value());
+    move(-60, 60, 200);
+    move(-60, -60, 1850);
 }
 
 int main()
