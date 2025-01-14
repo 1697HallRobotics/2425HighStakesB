@@ -7,7 +7,7 @@
 #include "pros/adi.hpp"
 #include "pros/misc.h"
 #include "pros/motors.h"
-#include "pros/apix.h"
+//#include "pros/apix.h"
 #include <cstddef>
 
 #define LEFT_MOTOR_PORTS {7, 5}
@@ -22,6 +22,7 @@
  * to keep execution time for this mode under a few seconds.
  */
 
+
 static void event_handler(lv_event_t * e)
 {
     lv_event_code_t code = lv_event_get_code(e);
@@ -34,38 +35,51 @@ static void event_handler(lv_event_t * e)
     }
 	if(code == LV_EVENT_DRAW_PART_BEGIN) {
 		lv_obj_draw_part_dsc_t * dsc = (lv_obj_draw_part_dsc_t *)lv_event_get_param(e);
-		 //Colors the top buttons BLUE
-        if(dsc->id == 0 || dsc -> id == 1) {
+		/*
+        if(dsc->id < 2) { //Colors the top buttons BLUE
             dsc->rect_dsc->radius = LV_RADIUS_CIRCLE;
             if(lv_btnmatrix_get_selected_btn(obj) == dsc->id)  dsc->rect_dsc->bg_color = lv_palette_darken(LV_PALETTE_BLUE, 3);
             else dsc->rect_dsc->bg_color = lv_palette_main(LV_PALETTE_BLUE);
             dsc->label_dsc->color = lv_color_white();
-        }
-		//Colors the bottom buttons RED
-        else if(dsc->id == 2 || dsc->id == 3) {
+        } else if(dsc->id == 2) { //Colors the skill's button PURPLE 
+            dsc->rect_dsc->radius = LV_RADIUS_CIRCLE;
+            if(lv_btnmatrix_get_selected_btn(obj) == dsc->id)  dsc->rect_dsc->bg_color = lv_palette_darken(LV_PALETTE_PURPLE, 3);
+            else dsc->rect_dsc->bg_color = lv_palette_main(LV_PALETTE_PURPLE);
+            dsc->label_dsc->color = lv_color_white();
+        } else if(dsc->id > 2) { //Colors the bottom buttons RED
             dsc->rect_dsc->radius = LV_RADIUS_CIRCLE;
             if(lv_btnmatrix_get_selected_btn(obj) == dsc->id)  dsc->rect_dsc->bg_color = lv_palette_darken(LV_PALETTE_RED, 3);
             else dsc->rect_dsc->bg_color = lv_palette_main(LV_PALETTE_RED);
             dsc->label_dsc->color = lv_color_white();
         }
-		//Colors the skill's button PURPLE
-		else if(dsc->id == 5) {
-            dsc->rect_dsc->radius = LV_RADIUS_CIRCLE;
-            if(lv_btnmatrix_get_selected_btn(obj) == dsc->id)  dsc->rect_dsc->bg_color = lv_palette_darken(LV_PALETTE_PURPLE, 3);
-            else dsc->rect_dsc->bg_color = lv_palette_main(LV_PALETTE_PURPLE);
-            dsc->label_dsc->color = lv_color_white();
-        }
+		*/
+
+		dsc->rect_dsc->radius = LV_RADIUS_CIRCLE;
+		lv_palette_t lv_palette;
+		switch(dsc->id) {
+			case 0: case 1: lv_palette = LV_PALETTE_BLUE;
+			case 2: lv_palette = LV_PALETTE_PURPLE;
+			case 3: case 4: lv_palette = LV_PALETTE_PURPLE;
+			default: lv_palette = LV_PALETTE_YELLOW;
+		};
+		if(lv_btnmatrix_get_selected_btn(obj) == dsc->id)  dsc->rect_dsc->bg_color = lv_palette_darken(lv_palette, 3);
+		else dsc->rect_dsc->bg_color = lv_palette_main(lv_palette);
+		dsc->label_dsc->color = lv_color_white();
 	}
 }
 
-static const char * btnm_map[] = {"L","R","\n","L","R","\n","SKILLS"};
+
+static const char * btnm_map[] = {"L","R","\n","SKILLS","\n","L","R"};
 
 void initialize() {
+
     lv_obj_t * btnm1 = lv_btnmatrix_create(lv_scr_act());
     lv_btnmatrix_set_map(btnm1, btnm_map);
     //lv_obj_align(btnm1, LV_ALIGN_CENTER, 0, 0);
     lv_obj_add_event_cb(btnm1, event_handler, LV_EVENT_ALL, NULL);
 	lv_obj_center(btnm1);
+
+	
 }
 
 /**
